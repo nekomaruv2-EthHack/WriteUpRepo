@@ -1,7 +1,5 @@
 # Cap WriteUp
 
-**Date:** 2026/06/06
-
 * Target IP: `10.129.166.179`
 
 ## 0-1. Reconnaissance – Nmap
