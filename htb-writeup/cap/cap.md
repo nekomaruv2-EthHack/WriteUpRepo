@@ -33,7 +33,7 @@ http://10.129.166.179
 
 In many HTB machines, the IP address must be mapped to a domain such as `cap.htb`. However, this machine was accessible directly through its IP address.
 
-![Cap website](cap_image1.png)
+![Cap website](./images/cap_image1.png)
 
 ## 0-2. Reconnaissance – FFUF
 
@@ -58,11 +58,11 @@ However, these endpoints were also directly accessible from the website's naviga
 
 On the website, I found a function that allowed me to download a PCAP file.
 
-![PCAP download page](cap_image2.png)
+![PCAP download page](./images/cap_image2.png)
 
 I downloaded the file and opened it in Wireshark.
 
-![Wireshark analysis](cap_image3.png)
+![Wireshark analysis](./images/cap_image3.png)
 
 While inspecting the packets, I found an FTP authentication request containing a password in plaintext.
 

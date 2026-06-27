@@ -1,103 +1,121 @@
-# TwoMillion WriteUp
+# TwoMillion Writeup
 
 * Target IP: `10.129.229.66`
 
 ## 0-1. Reconnaissance – Nmap
 
-```
+I started with a full port scan using Nmap.
+
+```bash
 nmap -sC -sV -vv -p- 10.129.229.66
 ```
 
-```
+```text
 22/tcp open  ssh     syn-ack OpenSSH 8.9p1 Ubuntu 3ubuntu0.1 (Ubuntu Linux; protocol 2.0)
-| ssh-hostkey: 
+| ssh-hostkey:
 |   ...omitted
 80/tcp open  http    syn-ack nginx
 |_http-title: Did not follow redirect to http://2million.htb/
-| http-methods: 
+| http-methods:
 |_  Supported Methods: GET HEAD POST OPTIONS
 Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
 ```
 
-IP is resolved as "http://2million.htb/", so add it to /etc/hosts
+Port 80 was open, and the web server redirected me to `http://2million.htb/`.
 
-```
+So I added the hostname to `/etc/hosts`.
+
+```bash
 echo "10.129.229.66 2million.htb" | sudo tee -a /etc/hosts
 ```
 
-Visit 80.
+Then I visited the web page.
 
-![Twomillion_image1](Twomillion_image1.png)
+![TwoMillion home page](./images/Twomillion_image1.png)
 
-Old Hack the box? I dont know.
-On this page, many links on header, but valid link was only `login`.
+The page looked like an old Hack The Box landing page. I was not sure what it was at first.
 
-![Twomillion_image2](Twomillion_image2.png)
+There were many links in the header, but the only working one seemed to be `login`.
 
-Futhermore, `here` on this page doesnt work too.
+![TwoMillion login link](./images/Twomillion_image2.png)
 
+Furthermore, the `here` link on the page did not work either.
 
 ## 0-2. Reconnaissance – FFUF
 
+I used FFUF to enumerate web paths.
 
-```
+```bash
 ffuf -u http://2million.htb/FUZZ -w /usr/share/wordlists/seclists/Discovery/Web-Content/common.txt -fs 162
-
-404                     [Status: 200, Size: 1674, Words: 118, Lines: 46, Duration: 42ms]
-api                     [Status: 401, Size: 0, Words: 1, Lines: 1, Duration: 33ms]
-home                    [Status: 302, Size: 0, Words: 1, Lines: 1, Duration: 37ms]
-invite                  [Status: 200, Size: 3859, Words: 1363, Lines: 97, Duration: 40ms]
-login                   [Status: 200, Size: 3704, Words: 1365, Lines: 81, Duration: 40ms]
-logout                  [Status: 302, Size: 0, Words: 1, Lines: 1, Duration: 33ms]
-register                [Status: 200, Size: 4527, Words: 1512, Lines: 95, Duration: 41ms]
 ```
 
-There is juicy endpoint `invite` and `register`.
+```text
+404                     [Status: 200, Size: 1674, Words: 118, Lines: 46]
+api                     [Status: 401, Size: 0, Words: 1, Lines: 1]
+home                    [Status: 302, Size: 0, Words: 1, Lines: 1]
+invite                  [Status: 200, Size: 3859, Words: 1363, Lines: 97]
+login                   [Status: 200, Size: 3704, Words: 1365, Lines: 81]
+logout                  [Status: 302, Size: 0, Words: 1, Lines: 1]
+register                [Status: 200, Size: 4527, Words: 1512, Lines: 95]
+```
 
-## 1. Register
+The `invite` and `register` endpoints looked interesting.
 
-![Twomillion_image3](Twomillion_image3.png)
+## 1. Registration
 
-OK, It seems to be we need invite code by trying some credential randomly, and it shows the message `Get an invite code first`
+![Register page](./images/Twomillion_image3.png)
 
-![Twomillion_image4](Twomillion_image4.png)
+I tried to register with random credentials, but the page showed this message:
 
-As if being led, I visit `invite`.
+```text
+Get an invite code first
+```
 
-By the way, what a funny way to make message.
+![Invite code required](./images/Twomillion_image4.png)
 
-![Twomillion_image5](Twomillion_image5.png)
+This strongly suggested that I needed to obtain an invite code before creating an account.
 
-Say hi to invite page.
+So I visited the `invite` endpoint.
 
-![Twomillion_image6](Twomillion_image6.png)
+![Invite page](./images/Twomillion_image5.png)
 
-Try some string into input box.
-Obviously, the code `aaa` is invalid but the message is popped-up by Javascript alert. It is curious.
+The invite page had an input field.
 
-![Twomillion_image7](Twomillion_image7.png)
+![Invite input](./images/Twomillion_image6.png)
 
-Yes, there is JS script, a possible hint.
+I tried entering a random string.
 
-![Twomillion_image8](Twomillion_image8.png)
+The code `aaa` was obviously invalid, but the error message appeared through a JavaScript alert. That was interesting because it suggested that some invite logic might be implemented on the client side.
 
-It shows like below:
+![Invalid invite code alert](./images/Twomillion_image7.png)
+
+I inspected the JavaScript.
+
+![JavaScript source](./images/Twomillion_image8.png)
+
+The script contained code like this:
 
 ```javascript
- $.ajax({
+$.ajax({
     type: "POST",
     dataType: "json",
     data: formData,
-    url: '/api/v1/invite/verify',
+    url: "/api/v1/invite/verify",
     ...
 
-    localStorage.setItem('inviteCode', code);
+    localStorage.setItem("inviteCode", code);
+});
 ```
 
-And there is `/js/inviteapi.min.js`
-I use ChatGPT to restorate.
+I also found the file:
 
+```text
+/js/inviteapi.min.js
 ```
+
+I used ChatGPT to beautify and understand the minified JavaScript.
+
+```javascript
 function verifyInviteCode(code) {
     var formData = {
         "code": code
@@ -135,13 +153,20 @@ function makeInviteCode() {
     });
 }
 ```
-This shows `makeInviteCode` make a code and that endpoint is `/api/v1/invite/how/to/generate`
 
-Response of `curl -X POST http://2million.htb/api/v1/invite/how/to/generate` is json. Lets look it.
+The `makeInviteCode()` function pointed to the following endpoint:
 
+```text
+/api/v1/invite/how/to/generate
 ```
-curl -s -X POST http://2million.htb/api/v1/invite/how/to/generate | jq .
 
+I sent a POST request to it.
+
+```bash
+curl -s -X POST http://2million.htb/api/v1/invite/how/to/generate | jq .
+```
+
+```json
 {
   "0": 200,
   "success": 1,
@@ -153,17 +178,23 @@ curl -s -X POST http://2million.htb/api/v1/invite/how/to/generate | jq .
 }
 ```
 
-ROT13, OK.
+The response said that the data was encrypted with ROT13.
 
-![Twomillion_image9](Twomillion_image9.png)
- From CyberChef, the data means：
- 
- > `In order to generate the invite code, make a POST request to /api/v1/invite/generate`
+![CyberChef ROT13](./images/Twomillion_image9.png)
 
-POST request to this endpoint.
+Using CyberChef, I decoded it:
 
+```text
+In order to generate the invite code, make a POST request to /api/v1/invite/generate
 ```
+
+So I sent another POST request to that endpoint.
+
+```bash
 curl -s -X POST http://2million.htb/api/v1/invite/generate | jq .
+```
+
+```json
 {
   "0": 200,
   "success": 1,
@@ -173,18 +204,21 @@ curl -s -X POST http://2million.htb/api/v1/invite/generate | jq .
   }
 }
 ```
-Maybe this is encoded by base64, decode it and set into localstorage, register, and login.
 
-Successful login to web page.
-![Twomillion_image10](Twomillion_image10.png)
+The returned code looked like Base64, so I decoded it and used the invite code to register an account.
 
+After registering, I was able to log in successfully.
 
-## 2. Sniff around API
-As we see api endpoint, we can sniff around api endpoints.
+![Successful login](./images/Twomillion_image10.png)
 
-Browse `http://2million.htb/api/v1`.
+## 2. Enumerating the API
 
+Since the JavaScript revealed API endpoints, I started exploring the API.
 
-![Twomillion_image11](Twomillion_image11.png)
+I visited:
 
+```text
+http://2million.htb/api/v1
+```
 
+![API v1](./images/Twomillion_image11.png)
