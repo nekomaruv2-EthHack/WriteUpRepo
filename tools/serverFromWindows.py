@@ -14,4 +14,3 @@ class UploadHandler(http.server.BaseHTTPRequestHandler):
         self.end_headers()
 
 http.server.HTTPServer(("0.0.0.0", 8001), UploadHandler).serve_forever()
-'
