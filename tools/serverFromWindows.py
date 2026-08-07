@@ -1,5 +1,5 @@
 # This python code is useful to start python server.
-# often time I struggle with send some files my parrot from windows server.
+# often time I struggle to send some files my parrot from windows server.
 # change "loot.zip" to arbitary file name.
 # 
 import http.server
