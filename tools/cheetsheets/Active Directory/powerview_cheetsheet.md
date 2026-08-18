@@ -60,8 +60,8 @@ The `userAccountControl` (UAC) attribute defines account states. Below are key s
 | UAC Flag | Hex / Value | Security Significance | PowerView Equivalent / Filter |
 | :--- | :--- | :--- | :--- |
 | `ACCOUNTDISABLE` | `0x0002` | Account is currently disabled. | Filter out with `(userAccountControl:1.2.840.113556.1.4.803:=2)` |
-| `PASSWD_NOTREQD` | `0x0020` | Password is not required. | `Get-DomainUser -CustomFilter "(useraccountcontrol -band 32)"` |
-| `DONT_EXPIRE_PASSWORD` | `0x10000` | Password never expires. | `Get-DomainUser -CustomFilter "(useraccountcontrol -band 65536)"` |
+| `PASSWD_NOTREQD` | `0x0020` | Password is not required. | `Get-DomainUser -LDAPFilter '(userAccountControl:1.2.840.113556.1.4.803:=32)'` |
+| `DONT_EXPIRE_PASSWORD` | `0x10000` | Password never expires. | `Get-DomainUser -LDAPFilter '(userAccountControl:1.2.840.113556.1.4.803:=65536)'` |
 | `DONT_REQ_PREAUTH` | `0x400000` | Kerberos Pre-Auth Disabled. | `Get-DomainUser -PreauthNotRequired` |
 | `TRUSTED_FOR_DELEGATION` | `0x80000` | Unconstrained Delegation. | `Get-DomainUser -Unconstrained` |
 | `TRUSTED_TO_AUTH_FOR_DELEGATION` | `0x1000000` | Constrained Delegation. | `Get-DomainUser -TrustedToAuth` |
