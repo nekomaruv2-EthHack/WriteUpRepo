@@ -35,7 +35,7 @@ PowerView functions support standardized PowerShell parameters for filtering, se
 | `Get-DomainForest` | Query forest configuration, domain trees, and Global Catalog servers. |
 | `Get-DomainForestDomain` | List all domains residing within the forest. |
 | `Get-DomainTrust` | List domain trust relationships for the current domain. |
-| `Get-DomainForestTrust` | List inter-forest trust relationships. |
+| `Get-ForestTrust` | List inter-forest trust relationships. |
 
 ---
 
@@ -116,7 +116,7 @@ The `userAccountControl` (UAC) attribute defines account states. Below are key s
 | `Find-DomainShare` | Enumerate accessible SMB network shares across domain machines. |
 | `Find-DomainShare -CheckShareAccess` | Verify read/write access permissions on discovered shares. |
 | `Get-DomainUserEvent` | Query event logs on DCs to identify active user logon sessions. |
-| `Get-LAPSProperty` | Read LAPS passwords (if account has necessary permissions). |
+| `Get-DomainLAPSProperty` | Read LAPS passwords (if account has necessary permissions). |
 
 ---
 
@@ -129,7 +129,6 @@ The `userAccountControl` (UAC) attribute defines account states. Below are key s
 | `(Get-DomainUser -SearchBase "OU=<OU>,DC=<domain>").Count` | Count total users within a specific OU. |
 | `Get-DomainGPO` | List all Group Policy Objects (GPOs). |
 | `Get-DomainGPOLocalGroup` | Query GPO settings that modify local group memberships. |
-| `Get-DomainGPOComputerLocalGroup` | Map local administrator group memberships managed via GPO. |
 
 ---
 
@@ -153,6 +152,7 @@ The `userAccountControl` (UAC) attribute defines account states. Below are key s
 * `WriteDacl`: Ability to modify security permissions on the target object.
 * `WriteOwner`: Ability to take ownership of the target object.
 * `AllExtendedRights` / `ForceChangePassword`: Force password reset without knowing current password.
+* `DS-Replication-Get-Changes` / `DS-Replication-Get-Changes-All`: **DCSync permissions** allowing domain credential dumping.
 
 ### ACL Enumeration Commands
 
@@ -160,8 +160,8 @@ The `userAccountControl` (UAC) attribute defines account states. Below are key s
 | :--- | :--- |
 | `Get-DomainObjectAcl -Identity <object>` | Retrieve DACL for a specific object. |
 | `Get-DomainObjectAcl -Identity "Domain Admins" -ResolveGUIDs` | Retrieve DACL with human-readable rights and GUIDs. |
-| `Add-DomainObjectAclTarget -TargetIdentity <user>` | Find objects where a specific account has explicit rights. |
 | `Find-InterestingDomainAcl -ResolveGUIDs` | Scan the domain for non-default or abusable ACL permissions. |
+| `Get-DomainObjectAcl -SearchBase (Get-Domain).distinguishedName -ResolveGUIDs` | Query Domain Head ACLs to audit DCSync permissions. |
 
 ---
 
@@ -173,6 +173,7 @@ The `userAccountControl` (UAC) attribute defines account states. Below are key s
 Get-Domain
 Get-DomainSID
 Get-DomainPolicyData
+
 ```
 
 ### Playbook 2: Kerberos Hash Hunting (Kerberoasting & AS-REP Roasting)
@@ -183,6 +184,7 @@ Get-DomainUser -SPN | Where-Object {$_.samaccountname -notlike "*$"} | Select-Ob
 
 # Export AS-REP Roastable accounts
 Get-DomainUser -PreauthNotRequired | Select-Object samaccountname, useraccountcontrol
+
 ```
 
 ### Playbook 3: Privileged Groups & High-Value Account Discovery
@@ -193,6 +195,7 @@ Get-DomainGroupMember -Identity "Domain Admins" -Recurse | Select-Object MemberN
 
 # Find accounts with adminCount = 1
 Get-DomainUser -AdminCount | Select-Object samaccountname, memberof
+
 ```
 
 ### Playbook 4: Delegation & Misconfiguration Hunting
@@ -203,6 +206,7 @@ Get-DomainComputer -Unconstrained | Where-Object {$_.primarygroupid -ne 516} | S
 
 # Find Constrained Delegation accounts
 Get-DomainUser -LDAPFilter "(msDS-AllowedToDelegateTo=*)" | Select-Object samaccountname, msDS-AllowedToDelegateTo
+
 ```
 
 ### Playbook 5: Local Group & Host Enumeration
@@ -213,6 +217,22 @@ Get-NetLocalGroupMember -ComputerName WS01 -GroupName "Remote Management Users"
 
 # Native PowerShell query directly on current host
 Get-LocalGroupMember -Group "Remote Management Users"
+
+```
+
+### Playbook 6: DCSync Rights Hunting
+
+```powershell
+# Extract accounts holding DCSync (DS-Replication) permissions on Domain Head
+Get-DomainObjectAcl -SearchBase (Get-Domain).distinguishedName -ResolveGUIDs | Where-Object {
+    $_.ObjectAceType -match "DS-Replication-Get-Changes"
+} | ForEach-Object {
+    [PSCustomObject]@{
+        Account = Convert-SidToName $_.SecurityIdentifier
+        Right   = $_.ObjectAceType
+    }
+} | Select-Object Account, Right -Unique
+
 ```
 
 ---
@@ -221,11 +241,12 @@ Get-LocalGroupMember -Group "Remote Management Users"
 
 | Category | Primary PowerView Command |
 | --- | --- |
-| **Domain** | `Get-Domain`, `Get-DomainPolicyData`, `Get-DomainTrust` |
+| **Domain** | `Get-Domain`, `Get-DomainPolicyData`, `Get-DomainTrust`, `Get-ForestTrust` |
 | **Users** | `Get-DomainUser`, `Get-DomainUser -SPN`, `Get-DomainUser -PreauthNotRequired` |
 | **Domain Groups** | `Get-DomainGroup`, `Get-DomainGroupMember -Identity "Domain Admins" -Recurse` |
 | **Local Groups** | `Get-NetLocalGroupMember -ComputerName WS01 -GroupName "<group>"`, `Get-LocalGroupMember` |
 | **Computers** | `Get-DomainComputer`, `Get-DomainComputer -Unconstrained` |
 | **Shares** | `Find-DomainShare -CheckShareAccess` |
-| **OUs / GPOs** | `Get-DomainOU`, `Get-DomainGPO`, `Get-DomainGPOComputerLocalGroup` |
-| **ACLs** | `Find-InterestingDomainAcl -ResolveGUIDs`, `Get-DomainObjectAcl` |
+| **OUs / GPOs** | `Get-DomainOU`, `Get-DomainGPO`, `Get-DomainGPOLocalGroup` |
+| **ACLs / DCSync** | `Find-InterestingDomainAcl -ResolveGUIDs`, `Get-DomainObjectAcl` |
+
