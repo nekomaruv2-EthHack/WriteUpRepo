@@ -28,6 +28,8 @@
 
 *   **Impacket Toolkit**
     *   **概要**: Windowsプロトコルを操作・悪用するPythonライブラリ群。リモート実行は用途で選択：`ADMIN$`へのバイナリ配置による標準RCEは`psexec.py`、バイナリ不使用で静かなSMB/MSRPC実行は`smbexec.py`、タスクスケジューラ経由の指定時刻実行（要時刻同期）は`atexec.py`、非対話的なサービス作成・管理は`services.py`を使用。その他`wmiexec.py`（WMIシェル）、`GetUserSPNs.py`（Kerberoasting）、`lookupsid.py`（SID列挙）、`ticketer.py`（チケット作成）、`raiseChild.py`（ドメイン昇格）、`mssqlclient.py`（MSSQL操作）等を収録。
+    * .py系は、`<スクリプト名>.py [domain/]username[:password]@<ターゲットIP>`で接続。
+      * 例：`psexec.py 172.20.0.52 "inlanefreight.local/helen:RedRiot88"`
     *   **psexec.py**: [https://github.com/fortra/impacket/blob/master/examples/psexec.py](https://github.com/fortra/impacket/blob/master/examples/psexec.py)
     *   **smbexec.py**: [https://github.com/fortra/impacket/blob/master/examples/smbexec.py](https://github.com/fortra/impacket/blob/master/examples/smbexec.py)
     *   **atexec.py**: [https://github.com/fortra/impacket/blob/master/examples/atexec.py](https://github.com/fortra/impacket/blob/master/examples/atexec.py)
