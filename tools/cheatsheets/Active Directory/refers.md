@@ -1,3 +1,5 @@
+### 1. Tools & Attack Vectors Reference Links
+
 *   **Kerbrute**
     *   **概要**: Kerberos事前認証の仕組みを利用して、高速にドメインユーザーの列挙（User Enumeration）やパスワードスプレーを行うツール。
     *   **URL**: [https://github.com/ropnop/kerbrute](https://github.com/ropnop/kerbrute)
@@ -25,13 +27,16 @@
     *   **URL**: [https://github.com/dirkjanm/BloodHound.py](https://github.com/dirkjanm/BloodHound.py)
 
 *   **Impacket Toolkit**
-    *   **概要**: Windowsプロトコルをプログラム的に操作・悪用するためのPythonライブラリおよびスクリプト群。ドキュメント内では複数の代表的なスクリプトが参照されています。
-    *   **wmiexec.py**: [https://github.com/fortra/impacket/blob/master/examples/wmiexec.py](https://github.com/fortra/impacket/blob/master/examples/wmiexec.py)
+    *   **概要**: Windowsプロトコルを操作・悪用するPythonライブラリ群。リモート実行は用途で選択：`ADMIN$`へのバイナリ配置による標準RCEは`psexec.py`、バイナリ不使用で静かなSMB/MSRPC実行は`smbexec.py`、タスクスケジューラ経由の指定時刻実行（要時刻同期）は`atexec.py`、非対話的なサービス作成・管理は`services.py`を使用。その他`wmiexec.py`（WMIシェル）、`GetUserSPNs.py`（Kerberoasting）、`lookupsid.py`（SID列挙）、`ticketer.py`（チケット作成）、`raiseChild.py`（ドメイン昇格）、`mssqlclient.py`（MSSQL操作）等を収録。
     *   **psexec.py**: [https://github.com/fortra/impacket/blob/master/examples/psexec.py](https://github.com/fortra/impacket/blob/master/examples/psexec.py)
+    *   **smbexec.py**: [https://github.com/fortra/impacket/blob/master/examples/smbexec.py](https://github.com/fortra/impacket/blob/master/examples/smbexec.py)
+    *   **atexec.py**: [https://github.com/fortra/impacket/blob/master/examples/atexec.py](https://github.com/fortra/impacket/blob/master/examples/atexec.py)
+    *   **services.py**: [https://github.com/fortra/impacket/blob/master/examples/services.py](https://github.com/fortra/impacket/blob/master/examples/services.py)
+    *   **wmiexec.py**: [https://github.com/fortra/impacket/blob/master/examples/wmiexec.py](https://github.com/fortra/impacket/blob/master/examples/wmiexec.py)
     *   **GetUserSPNs.py**: [https://github.com/fortra/impacket/blob/master/examples/GetUserSPNs.py](https://github.com/fortra/impacket/blob/master/examples/GetUserSPNs.py)
-    *   **lookupsid.py**: [https://github.com/SecureAuthCorp/impacket/blob/master/examples/lookupsid.py](https://github.com/SecureAuthCorp/impacket/blob/master/examples/lookupsid.py)
-    *   **ticketer.py**: [https://github.com/SecureAuthCorp/impacket/blob/master/examples/ticketer.py](https://github.com/SecureAuthCorp/impacket/blob/master/examples/ticketer.py)
-    *   **raiseChild.py**: [https://github.com/SecureAuthCorp/impacket/blob/master/examples/raiseChild.py](https://github.com/SecureAuthCorp/impacket/blob/master/examples/raiseChild.py)
+    *   **lookupsid.py**: [https://github.com/fortra/impacket/blob/master/examples/lookupsid.py](https://github.com/fortra/impacket/blob/master/examples/lookupsid.py)
+    *   **ticketer.py**: [https://github.com/fortra/impacket/blob/master/examples/ticketer.py](https://github.com/fortra/impacket/blob/master/examples/ticketer.py)
+    *   **raiseChild.py**: [https://github.com/fortra/impacket/blob/master/examples/raiseChild.py](https://github.com/fortra/impacket/blob/master/examples/raiseChild.py)
     *   **mssqlclient.py**: [https://github.com/fortra/impacket/blob/master/examples/mssqlclient.py](https://github.com/fortra/impacket/blob/master/examples/mssqlclient.py)
 
 *   **Snaffler**
@@ -98,8 +103,6 @@
 
 ### 2. PowerShell 管理・状況把握ツール (PowerShell & Policy Administration Tools)
 
-ADのネイティブ機能や管理用コマンドレットを悪用、またはその代わりとなる PowerShell ライブラリの参照URL。
-
 *   **PowerView / PowerSploit**
     *   **概要**: Active Directory環境下での状況認識（Situational Awareness）に幅広く活用される、PowerShell製の主要AD探索フレームワーク。
     *   **GitHub**: [https://github.com/PowerShellMafia/PowerSploit/tree/master/Recon](https://github.com/PowerShellMafia/PowerSploit/tree/master/Recon)
@@ -115,53 +118,27 @@ ADのネイティブ機能や管理用コマンドレットを悪用、または
 
 ### 3. Microsoft公式＆規格参考URL (Microsoft & Industry Standard Reference Links)
 
-ドキュメント内で技術検証や背景説明のために参照されているMicrosoftの公式マニュアル、およびRFCなどの業界標準URL。
-
-*   **Samba/enum4linux マニュアル**:
-    [https://www.samba.org/samba/docs/current/man-html/samba.7.html](https://www.samba.org/samba/docs/current/man-html/samba.7.html)
-*   **rpcclient マニュアル**:
-    [https://www.samba.org/samba/docs/current/man-html/rpcclient.1.html](https://www.samba.org/samba/docs/current/man-html/rpcclient.1.html)
-*   **LLMNR規格 (RFC 4795)**:
-    [https://datatracker.ietf.org/doc/html/rfc4795](https://datatracker.ietf.org/doc/html/rfc4795)
-*   **NBT-NS (NetBIOS Name Service) 関連ドキュメント**:
-    [https://learn.microsoft.com/en-us/previous-versions/windows/it-pro/windows-2000-server/cc940063(v=technet.10)?redirectedfrom=MSDN](https://learn.microsoft.com/en-us/previous-versions/windows/it-pro/windows-2000-server/cc940063(v=technet.10)?redirectedfrom=MSDN)
-*   **Windows セキュリティ識別子 (SID) の理解**:
-    [https://learn.microsoft.com/en-us/windows-server/identity/ad-ds/manage/understand-security-identifiers](https://learn.microsoft.com/en-us/windows-server/identity/ad-ds/manage/understand-security-identifiers)
-*   **Windows Management Instrumentation (WMI) スタートページ**:
-    [https://learn.microsoft.com/en-us/windows/win32/wmisdk/wmi-start-page](https://learn.microsoft.com/en-us/windows/win32/wmisdk/wmi-start-page)
-*   **WMI概要**:
-    [https://learn.microsoft.com/en-us/windows/win32/wmisdk/about-wmi](https://learn.microsoft.com/en-us/windows/win32/wmisdk/about-wmi)
-*   **BloodHound Edges (例: CanRDP)**:
-    [https://bloodhound.specterops.io/resources/edges/can-rdp](https://bloodhound.specterops.io/resources/edges/can-rdp)
-*   **Active Directory PowerShell モジュール (General)**:
-    [https://learn.microsoft.com/en-us/powershell/module/activedirectory/](https://learn.microsoft.com/en-us/powershell/module/activedirectory/)
-*   **Active Directory PowerShell モジュール (Get-ADUser)**:
-    [https://learn.microsoft.com/en-us/powershell/module/activedirectory/get-aduser?view=windowsserver2022-ps](https://learn.microsoft.com/en-us/powershell/module/activedirectory/get-aduser?view=windowsserver2022-ps) (または2025年版: [get-aduser?view=windowsserver2025-ps](https://learn.microsoft.com/en-us/powershell/module/activedirectory/get-aduser?view=windowsserver2025-ps))
-*   **Microsoft.PowerShell.Core モジュール**:
-    [https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.core/?view=powershell-7.6&viewFallbackFrom=powershell-7.2](https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.core/?view=powershell-7.6&viewFallbackFrom=powershell-7.2)
-*   **Get-Module コマンドレット**:
-    [https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.core/get-module?view=powershell-7.6&viewFallbackFrom=powershell-7.2](https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.core/get-module?view=powershell-7.6&viewFallbackFrom=powershell-7.2)
-*   **PowerShell モジュール一覧**:
-    [https://learn.microsoft.com/en-us/powershell/module/](https://learn.microsoft.com/en-us/powershell/module/)
-*   **WMIC コマンドチートシート (Gist)**:
-    [https://gist.github.com/xorrior/67ee741af08cb1fc86511047550cdaf4](https://gist.github.com/xorrior/67ee741af08cb1fc86511047550cdaf4)
-*   **Windows コマンドラインツール - netsh**:
-    [https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/netsh](https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/netsh)
-*   **Windows コマンドラインツール - sc-query**:
-    [https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/sc-query](https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/sc-query)
-*   **Dsquery コマンドレファンス**:
-    [https://learn.microsoft.com/en-us/previous-versions/windows/it-pro/windows-server-2012-r2-and-2012/cc754232(v=ws.11)](https://learn.microsoft.com/en-us/previous-versions/windows/it-pro/windows-server-2012-r2-and-2012/cc754232(v=ws.11))
-*   **UserAccountControl（UAC）属性の制御**:
-    [https://learn.microsoft.com/en-us/troubleshoot/windows-server/active-directory/useraccountcontrol-manipulate-account-properties](https://learn.microsoft.com/en-us/troubleshoot/windows-server/active-directory/useraccountcontrol-manipulate-account-properties)
-*   **LDAP 一致ルール (Matching Rules) の仕様**:
-    [https://learn.microsoft.com/en-us/openspecs/windows_protocols/ms-adts/4e638665-f466-4597-93c4-12f2ebfabab5](https://learn.microsoft.com/en-us/openspecs/windows_protocols/ms-adts/4e638665-f466-4597-93c4-12f2ebfabab5)
-*   **.NET SecureString クラス概要**:
-    [https://learn.microsoft.com/en-us/dotnet/api/system.security.securestring?view=net-6.0](https://learn.microsoft.com/en-us/dotnet/api/system.security.securestring?view=net-6.0)
-*   **Microsoft Security ブログ - SamAccountName スプーフィング**:
-    [https://techcommunity.microsoft.com/blog/microsoft-security-blog/sam-name-impersonation/3042699](https://techcommunity.microsoft.com/blog/microsoft-security-blog/sam-name-impersonation/3042699)
-*   **Sophos ブログ - noPac 脆弱性の恐怖**:
-    [https://www.sophos.com/en-us/blog/nopac-a-tale-of-two-vulnerabilities-that-could-end-in-ransomware](https://www.sophos.com/en-us/blog/nopac-a-tale-of-two-vulnerabilities-that-could-end-in-ransomware)
-*   **AD Security - Windowsドメインの既知のSIDリスト**:
-    [https://adsecurity.org/?p=1001](https://adsecurity.org/?p=1001)
-*   **Windows コマンドラインツール - runas**:
-    [https://learn.microsoft.com/en-us/previous-versions/windows/it-pro/windows-server-2012-r2-and-2012/cc771525(v=ws.11)](https://learn.microsoft.com/en-us/previous-versions/windows/it-pro/windows-server-2012-r2-and-2012/cc771525(v=ws.11))
+*   **Samba/enum4linux マニュアル**: [https://www.samba.org/samba/docs/current/man-html/samba.7.html](https://www.samba.org/samba/docs/current/man-html/samba.7.html)
+*   **rpcclient マニュアル**: [https://www.samba.org/samba/docs/current/man-html/rpcclient.1.html](https://www.samba.org/samba/docs/current/man-html/rpcclient.1.html)
+*   **LLMNR規格 (RFC 4795)**: [https://datatracker.ietf.org/doc/html/rfc4795](https://datatracker.ietf.org/doc/html/rfc4795)
+*   **NBT-NS (NetBIOS Name Service) 関連ドキュメント**: [https://learn.microsoft.com/en-us/previous-versions/windows/it-pro/windows-2000-server/cc940063(v=technet.10)?redirectedfrom=MSDN](https://learn.microsoft.com/en-us/previous-versions/windows/it-pro/windows-2000-server/cc940063(v=technet.10)?redirectedfrom=MSDN)
+*   **Windows セキュリティ識別子 (SID) の理解**: [https://learn.microsoft.com/en-us/windows-server/identity/ad-ds/manage/understand-security-identifiers](https://learn.microsoft.com/en-us/windows-server/identity/ad-ds/manage/understand-security-identifiers)
+*   **Windows Management Instrumentation (WMI) スタートページ**: [https://learn.microsoft.com/en-us/windows/win32/wmisdk/wmi-start-page](https://learn.microsoft.com/en-us/windows/win32/wmisdk/wmi-start-page)
+*   **WMI概要**: [https://learn.microsoft.com/en-us/windows/win32/wmisdk/about-wmi](https://learn.microsoft.com/en-us/windows/win32/wmisdk/about-wmi)
+*   **BloodHound Edges (例: CanRDP)**: [https://bloodhound.specterops.io/resources/edges/can-rdp](https://bloodhound.specterops.io/resources/edges/can-rdp)
+*   **Active Directory PowerShell モジュール (General)**: [https://learn.microsoft.com/en-us/powershell/module/activedirectory/](https://learn.microsoft.com/en-us/powershell/module/activedirectory/)
+*   **Active Directory PowerShell モジュール (Get-ADUser)**: [https://learn.microsoft.com/en-us/powershell/module/activedirectory/get-aduser?view=windowsserver2022-ps](https://learn.microsoft.com/en-us/powershell/module/activedirectory/get-aduser?view=windowsserver2022-ps)
+*   **Microsoft.PowerShell.Core モジュール**: [https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.core/?view=powershell-7.6&viewFallbackFrom=powershell-7.2](https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.core/?view=powershell-7.6&viewFallbackFrom=powershell-7.2)
+*   **Get-Module コマンドレット**: [https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.core/get-module?view=powershell-7.6&viewFallbackFrom=powershell-7.2](https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.core/get-module?view=powershell-7.6&viewFallbackFrom=powershell-7.2)
+*   **PowerShell モジュール一覧**: [https://learn.microsoft.com/en-us/powershell/module/](https://learn.microsoft.com/en-us/powershell/module/)
+*   **WMIC コマンドチートシート (Gist)**: [https://gist.github.com/xorrior/67ee741af08cb1fc86511047550cdaf4](https://gist.github.com/xorrior/67ee741af08cb1fc86511047550cdaf4)
+*   **Windows コマンドラインツール - netsh**: [https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/netsh](https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/netsh)
+*   **Windows コマンドラインツール - sc-query**: [https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/sc-query](https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/sc-query)
+*   **Dsquery コマンドレファンス**: [https://learn.microsoft.com/en-us/previous-versions/windows/it-pro/windows-server-2012-r2-and-2012/cc754232(v=ws.11)](https://learn.microsoft.com/en-us/previous-versions/windows/it-pro/windows-server-2012-r2-and-2012/cc754232(v=ws.11))
+*   **UserAccountControl（UAC）属性の制御**: [https://learn.microsoft.com/en-us/troubleshoot/windows-server/active-directory/useraccountcontrol-manipulate-account-properties](https://learn.microsoft.com/en-us/troubleshoot/windows-server/active-directory/useraccountcontrol-manipulate-account-properties)
+*   **LDAP 一致ルール (Matching Rules) の仕様**: [https://learn.microsoft.com/en-us/openspecs/windows_protocols/ms-adts/4e638665-f466-4597-93c4-12f2ebfabab5](https://learn.microsoft.com/en-us/openspecs/windows_protocols/ms-adts/4e638665-f466-4597-93c4-12f2ebfabab5)
+*   **.NET SecureString クラス概要**: [https://learn.microsoft.com/en-us/dotnet/api/system.security.securestring?view=net-6.0](https://learn.microsoft.com/en-us/dotnet/api/system.security.securestring?view=net-6.0)
+*   **Microsoft Security ブログ - SamAccountName スプーフィング**: [https://techcommunity.microsoft.com/blog/microsoft-security-blog/sam-name-impersonation/3042699](https://techcommunity.microsoft.com/blog/microsoft-security-blog/sam-name-impersonation/3042699)
+*   **Sophos ブログ - noPac 脆弱性の恐怖**: [https://www.sophos.com/en-us/blog/nopac-a-tale-of-two-vulnerabilities-that-could-end-in-ransomware](https://www.sophos.com/en-us/blog/nopac-a-tale-of-two-vulnerabilities-that-could-end-in-ransomware)
+*   **AD Security - Windowsドメインの既知のSIDリスト**: [https://adsecurity.org/?p=1001](https://adsecurity.org/?p=1001)
+*   **Windows コマンドラインツール - runas**: [https://learn.microsoft.com/en-us/previous-versions/windows/it-pro/windows-server-2012-r2-and-2012/cc771525(v=ws.11)](https://learn.microsoft.com/en-us/previous-versions/windows/it-pro/windows-server-2012-r2-and-2012/cc771525(v=ws.11))
