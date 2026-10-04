@@ -1,4 +1,4 @@
-# Python / NumPy / 機械学習 チートシート
+# Python / NumPy 
 
 > Python・NumPy・機械学習コードを「自分で書く・読む・デバッグする」ための実用チートシート。
 >
